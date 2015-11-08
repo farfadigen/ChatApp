@@ -10,9 +10,9 @@ public class Connection {
     private InetAddress ip;
     boolean open=false;
 
-    public Connection(String ipAddr, int port) {
+    public Connection(InetAddress ipAddr, int port) {
         try {
-            ip = InetAddress.getByName(ipAddr);
+            ip = ipAddr;
             ss = new ServerSocket(port);
             s1 = ss.accept();
             s = new Socket(ip, port);
@@ -21,7 +21,7 @@ public class Connection {
         }
     }
 
-    void sendNickHello(String nick) throws IOException {
+    public void sendNickHello(String nick) throws IOException {
         //while (true){
             OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
             String l = "ChatApp 2015 user "+nick;
@@ -33,7 +33,7 @@ public class Connection {
         //}
     }
 
-    void sendNickBusy(String nick) throws IOException{
+    public void sendNickBusy(String nick) throws IOException{
         //while (true){
             OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
             String l = "ChatApp 2015 user "+nick+" busy.";
@@ -45,7 +45,7 @@ public class Connection {
         //}
     }
 
-    void accept() throws IOException{
+    public void accept() throws IOException{
         OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
         String l = "Accepted...";
         String line = new String(l.getBytes(),"UTF-8");
@@ -55,7 +55,7 @@ public class Connection {
         open=true;
     }
 
-    void reject() throws IOException{
+    public void reject() throws IOException{
         OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
         String l = "Rejected...";
         String line = new String(l.getBytes(),"UTF-8");
@@ -64,22 +64,27 @@ public class Connection {
         out.flush();
     }
 
-    void sendMessage(){
-
+    public void sendMessage() throws IOException{
+        OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
+        String l = "Message: ";
+        String line = new String(l.getBytes(),"UTF-8");
+        line+="\n";
+        out.write(line);
+        out.flush();
     }
 
-    void close() throws IOException {
+    public void close() throws IOException {
         s.close();
         s1.close();
         ss.close();
         open=false;
     }
 
-    boolean isOpen(){
+    public boolean isOpen(){
         return open;
     }
 
-    void disconnect() throws IOException{
+    public void disconnect() throws IOException{
         OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
         String l = "Disconnected...";
         String line = new String(l.getBytes(),"UTF-8");
@@ -88,15 +93,20 @@ public class Connection {
         out.flush();
     }
 
-    /*Command receive(){
-        BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        Command l = in.read();
+    public Command receive() throws IOException{
+        ObjectInputStream in = new ObjectInputStream(s.getInputStream());
+        Command l = null;
+        try {
+            l = (Command) in.readObject();
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
         return l;
-    }*/
+    }
 
-    public static void main (String[] args) throws IOException {
+    /*public static void main (String[] args) throws IOException {
         Connection con = new Connection("127.0.0.1",999);
         con.sendNickHello("farf");
 
-    }
+    }*/
 }

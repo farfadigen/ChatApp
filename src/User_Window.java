@@ -91,7 +91,8 @@ class User_Window{
 
         JTextField Enter_field = new JTextField();
         Enter_field.setMaximumSize(new Dimension(800, 100));
-        Enter_field.setBackground(Color.GREEN);
+         
+        Enter_field.setBackground(Color.WHITE);
         JButton btnNewButton = new JButton("SEND");
 
         Send_panel.add(Enter_field);

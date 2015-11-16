@@ -1,13 +1,17 @@
-htlmimport java.net.*;
+import java.net.*;
 
 /**
  * Created by user on 2015-11-08.
  */
 public class Caller {
-    private String localNick="Unnamed";
+    private String localNick;
     private InetAddress remoteAddress;
+    private CallStatus callStatus;
+    private String remoteNick;
 
-    public Caller(){}
+    public Caller(){
+        localNick = "Anonymous";
+    }
 
     public Caller(String localNick){
         this.localNick = localNick;
@@ -27,12 +31,12 @@ public class Caller {
         }
     }
 
-    public Connection 	call(){
+    public Connection call(){
         Connection connection = new Connection(remoteAddress,999);
         return connection;
     }
 
-    public String 	getLocalNick(){
+    public String getLocalNick(){
         return localNick;
     }
 
@@ -48,20 +52,20 @@ public class Caller {
         BUSY, NO_SERVICE, NOT_ACCESSIBLE, OK, REJECTED;
     }
 
-    Caller.CallStatus getStatus(){
-
+    public CallStatus getStatus(){
+        return callStatus;
     }
 
-    void 	setLocalNick(String localNick){
+    public void setLocalNick(String localNick){
         this.localNick = localNick;
     }
 
-    void 	setRemoteAddress(InetAddress remoteAddress){
+    public void setRemoteAddress(InetAddress remoteAddress){
         this.remoteAddress = remoteAddress;
     }
 
-    String 	toString(){
-
+    public String toString(){
+        return localNick+" "+remoteAddress.toString();
     }
 
     /*static void main(java.lang.String[] args){

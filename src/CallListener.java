@@ -12,6 +12,7 @@ public class CallListener {
     public SocketAddress listenAddress;
     public String remoteNick;
     public SocketAddress remoteAddress;
+    public boolean busy;
 
     public CallListener() {
 
@@ -32,7 +33,7 @@ public class CallListener {
         }
     }
 
-    public String getConnection() {
+    public String getConnection() throws IOException {
         System.out.println("Waiting for a client...");
         try {
             ServerSocket s = new ServerSocket(port);
@@ -62,7 +63,7 @@ public class CallListener {
     }
 
     public boolean isBusy(){
-
+        return busy;
     }
 
     public SocketAddress getListenAddress(){
@@ -76,6 +77,19 @@ public class CallListener {
     public SocketAddress getRemoteAddress(){
         return remoteAddress;
     }
+
+    public void setLocalNick(String localNick){
+        this.localNick = localNick;
+    }
+
+    public void setBusy(boolean busy){
+        this.busy = busy;
+    }
+
+    public void setListenAddress(SocketAddress listenAddress){
+        this.listenAddress = listenAddress;
+    }
+    
 
 
 }

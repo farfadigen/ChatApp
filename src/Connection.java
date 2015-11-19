@@ -10,6 +10,12 @@ public class Connection {
     private InetAddress ip;
     boolean open=false;
 
+    public Connection(){}
+
+    public Connection(Socket s){
+        this.s=s;
+    }
+
     public Connection(InetAddress ipAddr, int port) {
         try {
             ip = ipAddr;
@@ -64,9 +70,9 @@ public class Connection {
         out.flush();
     }
 
-    public void sendMessage() throws IOException{
+    public void sendMessage(String l) throws IOException{
         OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
-        String l = "Message: ";
+        String m = new String
         String line = new String(l.getBytes(),"UTF-8");
         line+="\n";
         out.write(line);
@@ -93,14 +99,10 @@ public class Connection {
         out.flush();
     }
 
-    public Command receive() throws IOException{
-        ObjectInputStream in = new ObjectInputStream(s.getInputStream());
-        Command l = null;
-        try {
-            l = (Command) in.readObject();
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
+    public String receive() throws IOException{
+        BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        String l = null;
+        l = in.readLine();
         return l;
     }
 

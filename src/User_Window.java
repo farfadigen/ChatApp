@@ -3,12 +3,19 @@
  */
 import javax.swing.*;
 import java.awt.*;
-
+import java.awt.event.*;
+import java.io.IOException;
+import java.net.*;
 
 
 class User_Window{
 
     public JFrame frame;
+    private Connection connection;
+    private Caller caller;
+    private CallListener callListener;
+    private CallListenerThread callListenerThread;
+    private Command command;
 
 
     public User_Window() {
@@ -27,7 +34,7 @@ class User_Window{
 
         JLabel Local_login = new JLabel("Local login");
 
-        JTextField local_log = new JTextField();
+        final JTextField local_log = new JTextField();
         local_log.setBackground(Color.GREEN);
         local_log.setColumns(10);
 
@@ -39,15 +46,26 @@ class User_Window{
 
 
         JButton ApplyButton = new JButton("APPLY");
+        ApplyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                callListener = new CallListener();
+                caller = new Caller();
+                if(local_log.equals("")){
+
+                }
+                else{
+                    callListener.setLocalNick(local_log.getText());
+                    caller.setLocalNick(local_log.getText());
+                }
+            }
+        });
         chat_panel.add(ApplyButton);
 
 
         JLabel Remote_log = new JLabel("Remote login");
 
         chat_panel.add(Remote_log);
-
-
-
 
         JTextField TRemote_log= new JTextField();
         TRemote_log.setBackground(Color.GREEN);
@@ -60,13 +78,31 @@ class User_Window{
 
         chat_panel.add(Remote_addr);
 
-        JTextField TRemote_addr = new JTextField();
+        final JTextField TRemote_addr = new JTextField();
         TRemote_addr.setColumns(10);
         TRemote_addr.setBackground(Color.GREEN);
         chat_panel.add(TRemote_addr);
 
+        final JTextArea textArea = new JTextArea(23,80);
+        textArea.setBackground(Color.CYAN);
 
         JButton SendBut = new JButton("CONNECT");
+        SendBut.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String ip = new String(TRemote_addr.getText());
+                try {
+                    Socket socket = new Socket("files.litvinov.in.ua",28411);
+                    connection = new Connection(socket);
+                    connection.sendNickHello("Farf");
+                    String l = connection.receive();
+                    textArea.append(l);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+
+            }
+        });
         chat_panel.add(SendBut);
 
 
@@ -76,8 +112,7 @@ class User_Window{
 
         JPanel message_panel= new JPanel();
 
-        JTextArea textArea = new JTextArea(23,80);
-        textArea.setBackground(Color.CYAN);
+
 
         message_panel.add(textArea);
 
@@ -89,12 +124,21 @@ class User_Window{
 
 
 
-        JTextField Enter_field = new JTextField();
+        final JTextField Enter_field = new JTextField();
         Enter_field.setMaximumSize(new Dimension(800, 100));
          
         Enter_field.setBackground(Color.WHITE);
         JButton btnNewButton = new JButton("SEND");
-
+        btnNewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    connection.sendMessage(Enter_field.getText());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
         Send_panel.add(Enter_field);
         Send_panel.add(btnNewButton);
 

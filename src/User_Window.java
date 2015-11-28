@@ -16,6 +16,7 @@ class User_Window{
     private CallListener callListener;
     private CallListenerThread callListenerThread;
     private Command command;
+    private Messanger messanger;
 
 
     public User_Window() {
@@ -28,7 +29,6 @@ class User_Window{
         frame.setSize(1000,500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
-
 
         JPanel chat_panel = new JPanel();
 
@@ -45,18 +45,25 @@ class User_Window{
         frame.add(chat_panel);
 
 
-        JButton ApplyButton = new JButton("APPLY");
+        final JButton ApplyButton = new JButton("APPLY");
         ApplyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 callListener = new CallListener();
                 caller = new Caller();
+
+
                 if(local_log.equals("")){
 
                 }
                 else{
                     callListener.setLocalNick(local_log.getText());
                     caller.setLocalNick(local_log.getText());
+                    /*try {
+                        callListenerThread = new CallListenerThread(local_log.getText());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }*/
                 }
             }
         });
@@ -92,11 +99,17 @@ class User_Window{
             public void actionPerformed(ActionEvent e) {
                 String ip = new String(TRemote_addr.getText());
                 try {
-                    Socket socket = new Socket("files.litvinov.in.ua",28411);
+
+                    Socket socket = new Socket(ip,28411);
                     connection = new Connection(socket);
-                    connection.sendNickHello("Farf");
+                    connection.sendNickHello(local_log.getText());
                     String l = connection.receive();
                     textArea.append(l);
+                    ApplyButton.setEnabled(false);
+                    messanger = new Messanger(connection, textArea);
+                    messanger.setDaemon(true);
+                    messanger.start();
+
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -133,6 +146,7 @@ class User_Window{
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    textArea.append("You: "+Enter_field.getText());
                     connection.sendMessage(Enter_field.getText());
                 } catch (IOException e1) {
                     e1.printStackTrace();

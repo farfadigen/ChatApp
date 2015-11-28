@@ -72,8 +72,8 @@ public class Connection {
 
     public void sendMessage(String l) throws IOException{
         OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
-        String m = new String
-        String line = new String(l.getBytes(),"UTF-8");
+        String m = new String("Message: "); m+=l;
+        String line = new String(m.getBytes(),"UTF-8");
         line+="\n";
         out.write(line);
         out.flush();

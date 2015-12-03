@@ -22,13 +22,22 @@ public class CallListenerThread extends Observable implements Runnable {
     }
 
     public void run() {
+<<<<<<< HEAD
         while(true){
+=======
+        String l;
+        while(flag){
+>>>>>>> cf1bd8e9d687968d2de074c0db7d9638d9b55989
             Connection connection = new Connection();
             connection = callListener.getConnection();
             if (connection == null)
                 callStatus = Caller.CallStatus.valueOf("BUSY");
             else
                 callStatus = Caller.CallStatus.valueOf("OK");
+<<<<<<< HEAD
+=======
+
+>>>>>>> cf1bd8e9d687968d2de074c0db7d9638d9b55989
 
         }
 

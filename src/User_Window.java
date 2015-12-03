@@ -16,6 +16,10 @@ class User_Window{
     private CallListener callListener;
     private CallListenerThread callListenerThread;
     private Command command;
+<<<<<<< HEAD
+=======
+    private Messanger messanger;
+>>>>>>> cf1bd8e9d687968d2de074c0db7d9638d9b55989
 
 
     public User_Window() {
@@ -28,7 +32,6 @@ class User_Window{
         frame.setSize(1000,500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
-
 
         JPanel chat_panel = new JPanel();
 
@@ -45,18 +48,35 @@ class User_Window{
         frame.add(chat_panel);
 
 
+<<<<<<< HEAD
         JButton ApplyButton = new JButton("APPLY");
+=======
+        final JButton ApplyButton = new JButton("APPLY");
+>>>>>>> cf1bd8e9d687968d2de074c0db7d9638d9b55989
         ApplyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 callListener = new CallListener();
                 caller = new Caller();
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> cf1bd8e9d687968d2de074c0db7d9638d9b55989
                 if(local_log.equals("")){
 
                 }
                 else{
                     callListener.setLocalNick(local_log.getText());
                     caller.setLocalNick(local_log.getText());
+<<<<<<< HEAD
+=======
+                    /*try {
+                        callListenerThread = new CallListenerThread(local_log.getText());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }*/
+>>>>>>> cf1bd8e9d687968d2de074c0db7d9638d9b55989
                 }
             }
         });
@@ -92,11 +112,25 @@ class User_Window{
             public void actionPerformed(ActionEvent e) {
                 String ip = new String(TRemote_addr.getText());
                 try {
+<<<<<<< HEAD
                     Socket socket = new Socket("files.litvinov.in.ua",28411);
                     connection = new Connection(socket);
                     connection.sendNickHello("Farf");
                     String l = connection.receive();
                     textArea.append(l);
+=======
+
+                    Socket socket = new Socket(ip,28411);
+                    connection = new Connection(socket);
+                    connection.sendNickHello(local_log.getText());
+                    String l = connection.receive();
+                    textArea.append(l);
+                    ApplyButton.setEnabled(false);
+                    messanger = new Messanger(connection, textArea);
+                    messanger.setDaemon(true);
+                    messanger.start();
+
+>>>>>>> cf1bd8e9d687968d2de074c0db7d9638d9b55989
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -133,6 +167,10 @@ class User_Window{
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+<<<<<<< HEAD
+=======
+                    textArea.append("You: "+Enter_field.getText());
+>>>>>>> cf1bd8e9d687968d2de074c0db7d9638d9b55989
                     connection.sendMessage(Enter_field.getText());
                 } catch (IOException e1) {
                     e1.printStackTrace();

@@ -72,7 +72,7 @@ public class Connection {
 
     public void sendMessage(String l) throws IOException{
         OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
-        String m = new String
+       // String m = new String
         String line = new String(l.getBytes(),"UTF-8");
         line+="\n";
         out.write(line);
@@ -105,6 +105,8 @@ public class Connection {
         l = in.readLine();
         return l;
     }
+
+
 
     /*public static void main (String[] args) throws IOException {
         Connection con = new Connection("127.0.0.1",999);

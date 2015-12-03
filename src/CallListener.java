@@ -1,17 +1,17 @@
 import java.io.*;
 import java.net.*;
-import java.sql.Connection;
 
 public class CallListener {
 
     public String localNick = "Unnamed";
     public String localIP;
-    public int port = 1999;
+    public int port = 999;
     Socket incoming;
     InetAddress ip;
     public SocketAddress listenAddress;
     public String remoteNick;
     public SocketAddress remoteAddress;
+    private boolean busy = false;
 
     public CallListener() {
 
@@ -32,7 +32,7 @@ public class CallListener {
         }
     }
 
-    public String getConnection() {
+    public Connection getConnection() {
         System.out.println("Waiting for a client...");
         try {
             ServerSocket s = new ServerSocket(port);
@@ -53,7 +53,8 @@ public class CallListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        Connection connection = new Connection(incoming);
+        return connection;
     }
 
 
@@ -62,7 +63,7 @@ public class CallListener {
     }
 
     public boolean isBusy(){
-
+        return busy;
     }
 
     public SocketAddress getListenAddress(){
@@ -77,5 +78,11 @@ public class CallListener {
         return remoteAddress;
     }
 
+    public void setBusy(boolean busy){
+        this.busy=busy;
+    }
 
+    public void setLocalNick(String nick){
+        this.localNick=nick;
+    }
 }

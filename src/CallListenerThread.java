@@ -1,5 +1,6 @@
-import java.io.IOException;
-import java.util.Observable;
+import java.io.*;
+import java.util.*;
+import java.net.*;
 
 /**
  * Created by Маша on 10.11.2015.
@@ -8,6 +9,7 @@ import java.util.Observable;
 public class CallListenerThread extends Observable implements Runnable {
     private CallListener callListener;
     private  boolean flag;
+    private Caller.CallStatus callStatus;
 
 
     public CallListenerThread() throws IOException{
@@ -21,16 +23,12 @@ public class CallListenerThread extends Observable implements Runnable {
 
     public void run() {
         while(true){
-            try{
-                Connection connection = callListener.getConnection();
-                if (connection == null)
-                    callStatus = Caller.CallStatus.valueOf("BUSY");
-                else
-                    callStatus = Caller.CallStatus.valueOf("OK");
-
-            }catch(IOException e){
-                System.out.println("error");
-            }
+            Connection connection = new Connection();
+            connection = callListener.getConnection();
+            if (connection == null)
+                callStatus = Caller.CallStatus.valueOf("BUSY");
+            else
+                callStatus = Caller.CallStatus.valueOf("OK");
 
         }
 

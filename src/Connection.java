@@ -5,18 +5,23 @@ import java.io.*;
  * Created by user on 2015-11-01.
  */
 public class Connection {
-    private Socket s, s1;
-    private ServerSocket ss;
-    private InetAddress ip;
-    boolean open=false;
+    private final int port = 28411;
+    private OutputStream outputStream;
+    private Socket socket;
+    private String nick;
+    private DataOutputStream dataOutputStream;
+    private DataInputStream dataInputStream;
 
-    public Connection(){}
+    //public Connection(){}
 
-    public Connection(Socket s){
-        this.s=s;
+    public Connection(Socket s) throws IOException {
+        this.socket=s;
+        outputStream = socket.getOutputStream();
+        dataOutputStream = new DataOutputStream(outputStream);
+        dataInputStream = new DataInputStream(socket.getInputStream());
     }
 
-    public Connection(InetAddress ipAddr, int port) {
+    /*public Connection(InetAddress ipAddr, int port) {
         try {
             ip = ipAddr;
             ss = new ServerSocket(port);
@@ -25,90 +30,84 @@ public class Connection {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     public void sendNickHello(String nick) throws IOException {
-        //while (true){
-            OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
-            String l = "ChatApp 2015 user "+nick;
-            String line = new String(l.getBytes(),"UTF-8");
-            line+="\n";
-            out.write(line);
-            out.flush();
-        //    break;
-        //}
+        dataOutputStream.write(("ChatApp 2015 user " + nick + "\n").getBytes());
+        dataOutputStream.flush();
     }
 
+
     public void sendNickBusy(String nick) throws IOException{
-        //while (true){
-            OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
-            String l = "ChatApp 2015 user "+nick+" busy.";
-            String line = new String(l.getBytes(),"UTF-8");
-            line+="\n";
-            out.write(line);
-            out.flush();
-        //    break;
-        //}
+        dataOutputStream.write(("ChatApp 2015 user " + nick + "busy" + "\n").getBytes());
+        dataOutputStream.flush();
     }
 
     public void accept() throws IOException{
-        OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
-        String l = "Accepted...";
-        String line = new String(l.getBytes(),"UTF-8");
-        line+="\n";
-        out.write(line);
-        out.flush();
-        open=true;
+        dataOutputStream.write("Accepted\n".getBytes());
+        dataOutputStream.flush();
     }
 
     public void reject() throws IOException{
-        OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
-        String l = "Rejected...";
-        String line = new String(l.getBytes(),"UTF-8");
-        line+="\n";
-        out.write(line);
-        out.flush();
+        dataOutputStream.write("Rejected\n".getBytes());
+        dataOutputStream.flush();
     }
 
     public void sendMessage(String l) throws IOException{
-        OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
-<<<<<<< HEAD
-       // String m = new String
-        String line = new String(l.getBytes(),"UTF-8");
-=======
-        String m = new String("Message: "); m+=l;
-        String line = new String(m.getBytes(),"UTF-8");
->>>>>>> cf1bd8e9d687968d2de074c0db7d9638d9b55989
-        line+="\n";
-        out.write(line);
-        out.flush();
+        dataOutputStream.write("Message\n".getBytes());
+        dataOutputStream.write(l.getBytes());
+        dataOutputStream.flush();
     }
 
     public void close() throws IOException {
-        s.close();
-        s1.close();
-        ss.close();
-        open=false;
+        socket.close();
+        dataOutputStream.close();
+        dataInputStream.close();
+        outputStream.close();
     }
 
     public boolean isOpen(){
-        return open;
+        return !socket.isClosed();
     }
 
     public void disconnect() throws IOException{
-        OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
-        String l = "Disconnected...";
-        String line = new String(l.getBytes(),"UTF-8");
-        line+="\n";
-        out.write(line);
-        out.flush();
+        dataOutputStream.write("Disconnected\n".getBytes());
+        dataOutputStream.flush();
+        dataOutputStream.close();
+        close();
     }
 
-    public String receive() throws IOException{
-        BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        String l = null;
-        l = in.readLine();
-        return l;
+    public Command receive() throws IOException {
+        String command = "";
+        Command comand;
+        int n;
+        while (true) {
+            if((n = dataInputStream.read()) == '\n') {
+                break;
+            } else
+                command += (char) n;
+        }
+        comand = new Command(command.toUpperCase());
+        if (command.startsWith("ChatApp")) {
+            if (command.endsWith("busy")){
+                //command for nickname busy
+            }
+            else{
+                //command for nickname
+                comand = new Command("Nick");}
+        }
+
+        if(command.toUpperCase().equals("MESSAGE")) {
+            String message = "";
+            while (true) {
+                if((n = dataInputStream.read()) == '\n')
+                    break;
+                else
+                    message += (char) n;
+            }
+            //command for message
+        }
+        return comand;
     }
 
 

@@ -8,14 +8,15 @@ public class Connection {
     private final int port = 28411;
     private OutputStream outputStream;
     private Socket socket;
-    private String nick;
+    private String localNick;
     private DataOutputStream dataOutputStream;
     private DataInputStream dataInputStream;
 
     //public Connection(){}
 
-    public Connection(Socket s) throws IOException {
+    public Connection(Socket s, String nick) throws IOException {
         this.socket=s;
+        this.localNick=nick;
         outputStream = socket.getOutputStream();
         dataOutputStream = new DataOutputStream(outputStream);
         dataInputStream = new DataInputStream(socket.getInputStream());

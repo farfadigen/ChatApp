@@ -7,53 +7,50 @@ import java.net.*;
  */
 
 public class CallListenerThread extends Observable implements Runnable {
+    private Thread t = null;
+    private boolean isWork= true;
     private CallListener callListener;
-    private  boolean flag;
-    private Caller.CallStatus callStatus;
+    private Socket socket;
+    public final static  String itIsCallLisnenerThread="socket";
 
 
-    public CallListenerThread() throws IOException{
-        callListener = new CallListener();
-        start();
+    public CallListenerThread( int port){
+        try {
+            ServerSocket server = new ServerSocket(port);
+            callListener = new CallListener(server);
+        } catch (Exception e) {
+            System.out.println(  port);
+        }
     }
-    public CallListenerThread(String localNick) throws IOException{
-        callListener = new CallListener(localNick);
-        start();
+
+    public void CallListenerStart(String name){
+        t = new Thread(this, name);
+        t.start();
     }
 
     public void run() {
-<<<<<<< HEAD
-        while(true){
-=======
-        String l;
-        while(flag){
->>>>>>> cf1bd8e9d687968d2de074c0db7d9638d9b55989
-            Connection connection = new Connection();
-            connection = callListener.getConnection();
-            if (connection == null)
-                callStatus = Caller.CallStatus.valueOf("BUSY");
-            else
-                callStatus = Caller.CallStatus.valueOf("OK");
-<<<<<<< HEAD
-=======
-
->>>>>>> cf1bd8e9d687968d2de074c0db7d9638d9b55989
-
+        while(isWork){
+            synchronized (this) {
+                socket = null;
+                socket = callListener.getSocket();
+                setChanged();
+                notifyObservers(itIsCallLisnenerThread);
+            }
         }
-
-    }
-    public void setBusy(boolean busy){
-        callListener.setBusy(busy);
     }
 
-    public void setLocalNick(String localNick){
-        callListener.setLocalNick(localNick);
-    }
-    public void start(){
-        this.flag=true;
-        run();
-    };
+
     public void stop(){
-        this.flag=false;
-    };
+        synchronized (this) {
+            isWork = false;
+        }
+    }
+
+    public Socket getSocket(){
+        Socket socket1 = socket;
+        return socket1;
+    }
+
+
+
 }

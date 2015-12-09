@@ -7,7 +7,7 @@ import java.net.*;
 public class Caller {
     private String localNick="Anonymous";
     private InetAddress remoteAddress;
-    private int port;
+    private int port=28411;
     private String remoteNick;
     private Socket socket;
 
@@ -60,6 +60,8 @@ public class Caller {
     public void setNick(String nick) {
         this.remoteNick = nick;
     }
+
+    public void setSocket(Socket s){this.socket = s;}
 
     public static enum CallStatus {
         BUSY, NO_SERVICE, NOT_ACCESSIBLE, OK, REJECTED;

@@ -3,26 +3,35 @@
  */
 
 public class Command {
-    protected static String [] CType= {"ACCEPT", "DISCONNECT", "MASSAGE", "NICK", "REJECT"};
-    protected String com;
-    Command(){
+
+    protected String command;
+    protected boolean isHaveFalseCommand=false;
+
+    public Command() {
 
     }
-    public Command(String com){
-        if (check(com)) {
-            this.com = com;
-        } else {
-            this.com="INCORRECT";
+
+    public void setCommand(String comand) {
+        if(comand.toUpperCase().equals("ACCEPTED")){
+            this.command="ACCEPTED";
+        }
+        else if(comand.toUpperCase().equals("REJECTED")){
+            this.command="REJECTED";
+        }
+        else if(comand.toUpperCase().equals("DISCONNECT")){
+            this.command="DISCONNECT";
+        }
+        else{
+            isHaveFalseCommand=true;
         }
     }
-    protected boolean check(String com) {
-        for (int i = 0; i <= CType.length; i++)
-            if (CType[i].equals(com)) {
-                return true;
-            }
-        return false;
+
+    public String getCommand(){
+        isHaveFalseCommand = true;
+        return command;
     }
-    public String getCom(){
-        return com;
+
+    public boolean isHaveFalseCommand(){
+        return isHaveFalseCommand;
     }
 }

@@ -2,14 +2,31 @@
  * Created by Маша on 15.11.2015.
  */
 public class MessageCommand extends Command {
-    private String message;
+    public static final String message = "Message";
 
-    public MessageCommand(String message) {
-        super(Command.CommandType.valueOf("MESSAGE"));
-        this.message = message;
+    private String sendedMessage;
+    private boolean isHaveMessage;
+
+    public MessageCommand (){
+        super.command = message;
     }
 
-    public String toString (){
-        return message;
+    public void setCommand(String command){
+        if (message.equals(command)) super.isHaveFalseCommand = false;
+        else super.isHaveFalseCommand = true;
+    }
+
+    public void setMessage(String sendedMessage){
+        this.sendedMessage = sendedMessage;
+        this.isHaveMessage = true;
+    }
+
+    public boolean isHaveMessage(){
+        return isHaveMessage;
+    }
+
+    public String getMessage(){
+        isHaveMessage = false;
+        return sendedMessage;
     }
 }

@@ -11,6 +11,7 @@ public class Connection {
     private String localNick;
     private DataOutputStream dataOutputStream;
     private DataInputStream dataInputStream;
+    static String tmpStrTimep;
 
     //public Connection(){}
 
@@ -78,7 +79,7 @@ public class Connection {
         close();
     }
 
-    public Command receive() throws IOException {
+    /*public Command receive() throws IOException {
         String command = "";
         Command comand;
         int n;
@@ -109,9 +110,33 @@ public class Connection {
             //command for message
         }
         return comand;
+    }*/
+
+    public Command receive() throws IOException{
+        Command command = new Command();
+        String commandMessage = "";
+
+        commandMessage = dataInputStream.readLine();
+        command.setCommand(commandMessage);
+        if (!command.isHaveFalseCommand()) return command;
+
+        System.out.println("1");
+        MessageCommand messageCommand = new MessageCommand();
+        messageCommand.setCommand(commandMessage);
+        if (!messageCommand.isHaveFalseCommand()){
+            tmpStrTimep = dataInputStream.readLine();
+            messageCommand.setMessage(tmpStrTimep);
+            return messageCommand;
+        }
+
+        System.out.println("2");
+        NickCommand nickCommand = new NickCommand();
+        nickCommand.setCommand(commandMessage);
+        if (!nickCommand.isHaveFalseCommand()) return nickCommand;
+
+        System.out.println("3");
+        return null;
     }
-
-
 
     /*public static void main (String[] args) throws IOException {
         Connection con = new Connection("127.0.0.1",999);

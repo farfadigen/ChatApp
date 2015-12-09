@@ -3,9 +3,10 @@
  */
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.net.*;
+import java.net.ServerSocket;
 
 
 class User_Window{
@@ -46,20 +47,7 @@ class User_Window{
         ApplyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                callListener = new CallListener();
-                caller = new Caller();
-                if(local_log.equals("")){
-
-                }
-                else{
-                    callListener.setLocalNick(local_log.getText());
-                    caller.setLocalNick(local_log.getText());
-                    /*try {
-                        callListenerThread = new CallListenerThread(local_log.getText());
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }*/
-                }
+                caller = new Caller(local_log.getText());
             }
         });
         chat_panel.add(ApplyButton);
@@ -92,7 +80,16 @@ class User_Window{
         SendBut.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    caller = new Caller(TRemote_addr.getText(),28411);
+                    caller.setLocalNick(local_log.getText());
+                    connection=caller.call();
+                    callListener = new CallListener(new ServerSocket(28411));
+                    callListenerThread = new CallListenerThread(9999);
+                    callListenerThread.CallListenerStart("bot");
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
         chat_panel.add(SendBut);
